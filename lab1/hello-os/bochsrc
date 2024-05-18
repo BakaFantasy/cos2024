@@ -1,0 +1,4 @@
+megs: 32                             # sets the 'guest' and 'host' memory parameters to the same value
+display_library: sdl2                # the code that displays the Bochs VGA screen
+boot: floppy                         # defines the boot sequence
+floppya: 1_44=a.img, status=inserted # the first drive, with initial status `inserted` instead of `ejected`

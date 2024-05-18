@@ -1,0 +1,33 @@
+###############################################################
+# Configuration file for Bochs
+###############################################################
+
+# how much memory the emulated machine will have
+#megs: 32
+
+# set display library
+# display_library: sdl2, options=gui_debug
+
+# filename of ROM images
+romimage: file=/usr/local/share/bochs/BIOS-bochs-legacy
+#vgaromimage: file=/usr/local/share/bochs/VGABIOS-lgpl-latest
+
+# what disk images will be used
+floppya: 1_44=a.img, status=inserted
+
+# choose the boot disk.
+#boot: a
+
+# where do we send log messages?
+# log: bochsout.txt
+
+# disable the mouse
+#mouse: enabled=0
+
+# enable key mapping, using US layout as default.
+# keyboard_mapping: enabled=1, map=/usr/share/bochs/keymaps/x11-pc-us.map
+# keyboard: keymap=/usr/local/share/bochs/keymaps/sdl2-pc-us.map
+
+# enable gdb stub
+#gdbstub: enabled=1, port=1234, text_base=0, data_base=0, bss_base=0
+
