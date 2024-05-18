@@ -32,14 +32,39 @@ PUBLIC void spurious_irq(int irq);
 
 /* clock.c */
 PUBLIC void clock_handler(int irq);
+PUBLIC void init_clock();
 
+/* keyboard.c */
+PUBLIC void init_keyboard();
+
+/* tty.c */
+PUBLIC void task_tty();
+PUBLIC void task_clearer();
+PUBLIC void in_process(TTY* p_tty, u32 key);
+
+/* console.c */
+PUBLIC void out_char(CONSOLE* p_con, char ch);
+PUBLIC void scroll_screen(CONSOLE* p_con, int direction);
+PUBLIC void clear(CONSOLE *p_con);
+PUBLIC void init_search(CONSOLE *p_con);
+PUBLIC void show_highlight(CONSOLE *p_con);
+PUBLIC void clear_highlight(CONSOLE *p_con);
 
 /* 以下是系统调用相关 */
+typedef struct sem_t sem_t;
 
 /* proc.c */
 PUBLIC  int     sys_get_ticks();        /* sys_call */
+PUBLIC  void    sys_sleep(int milli_sec);
+PUBLIC  void    sys_puts(char *str);
+PUBLIC  void    sys_sem_post(sem_t *sem);
+PUBLIC  void    sys_sem_wait(sem_t *sem);
 
 /* syscall.asm */
 PUBLIC  void    sys_call();             /* int_handler */
 PUBLIC  int     get_ticks();
+PUBLIC  void    sleep(int milli_sec);
+PUBLIC  void    puts(char *str);
+PUBLIC  void    sem_post(sem_t *sem);
+PUBLIC  void    sem_wait(sem_t *sem);
 
