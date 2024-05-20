@@ -89,32 +89,71 @@ PUBLIC int kernel_main() {
   while (1) {}
 }
 
-/*======================================================================*
-                               TestA
- *======================================================================*/
-void TestA() {
+static void read_rf() {
+
+}
+
+static void write_rf() {
+  
+}
+
+static void read_wf() {
+
+}
+
+static void write_wf() {
+
+}
+
+static void read_fair() {
+
+}
+
+static void write_fair() {
+
+}
+
+enum Algo {READER_FIRST, WRITER_FIRST, FAIR};
+static enum Algo current_algo = READER_FIRST;
+
+void T_main() {
   while (1) {
-    disp_str("A."); // FIXME: random characters when printing newline
-    milli_delay(1000);
+
   }
 }
 
-/*======================================================================*
-                               TestB
- *======================================================================*/
-void TestB() {
+void T_producer() {
   while (1) {
-    disp_str("B.");
-    milli_delay(1000);
+    switch (current_algo) {
+      case READER_FIRST:
+        write_rf();
+        break;
+      case WRITER_FIRST:
+        write_wf();
+        break;
+      case FAIR:
+        write_fair();
+        break;
+      default:
+        break;
+    }
   }
 }
 
-/*======================================================================*
-                               TestC
- *======================================================================*/
-void TestC() {
+void T_consumer() {
   while (1) {
-    disp_str("C.");
-    sys_sleep(2000);
+    switch (current_algo) {
+      case READER_FIRST:
+        read_rf();
+        break;
+      case WRITER_FIRST:
+        read_wf();
+        break;
+      case FAIR:
+        read_fair();
+        break;
+      default:
+        break;
+    }
   }
 }

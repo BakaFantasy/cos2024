@@ -98,5 +98,9 @@
 
 /* system call */
 #define NR_SYS_CALL     5
+#define BUF_SZ 0x400
+
+/* producer-consumer */
+#define NR_READERS 3
 
 #endif /* _ORANGES_CONST_H_ */

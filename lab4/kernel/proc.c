@@ -49,18 +49,36 @@ PUBLIC void sys_sleep(int milli_sec) {
                            sys_puts
  *======================================================================*/
 PUBLIC void sys_puts(char *str) {
-  disp_str(str);
+  char buf[BUF_SZ];
+  strcpy(buf, str);
+  disp_str(buf);
 }
 
 /*======================================================================*
                            sys_sem_post
  *======================================================================*/
 PUBLIC void sys_sem_post(sem_t *sem) {
+  disable_int();
+  sem->value++;
+  if (sem->value <= 0) {
+    sem->waiters[sem->head]->blocked = 0;
+    sem->head = (sem->head + 1) % NR_PROCS;
+  }
+  enable_int();
 }
 
 /*======================================================================*
                            sys_sem_wait
  *======================================================================*/
 PUBLIC void sys_sem_wait(sem_t *sem) {
+  disable_int();
+  sem->value--;
+  if (sem->value < 0) {
+    p_proc_ready->blocked = 1;
+    sem->waiters[sem->tail] = p_proc_ready;
+    sem->tail = (sem->tail + 1) % NR_PROCS;
+    schedule(); // TODO: enable interruption?
+  }
+  enable_int();
 }
 

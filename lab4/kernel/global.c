@@ -22,9 +22,12 @@ PUBLIC  TASK task_table[NR_TASKS] = {
     };
 
 PUBLIC  TASK user_proc_table[NR_PROCS] = {
-    {TestA, STACK_SIZE_TESTA, "TestA"},
-    {TestB, STACK_SIZE_TESTB, "TestB"},
-    {TestC, STACK_SIZE_TESTC, "TestC"},
+    {T_main, STACK_SIZE_PROC, "main"},
+    {T_producer, STACK_SIZE_PROC, "P1"},
+    {T_producer, STACK_SIZE_PROC, "P2"},
+    {T_consumer, STACK_SIZE_PROC, "C1"},
+    {T_consumer, STACK_SIZE_PROC, "C2"},
+    {T_consumer, STACK_SIZE_PROC, "C3"},
 };
 
 PUBLIC  char task_stack[STACK_SIZE_TOTAL];
@@ -36,3 +39,8 @@ PUBLIC  irq_handler irq_table[NR_IRQ];
 
 PUBLIC  system_call sys_call_table[NR_SYS_CALL] =
     {&sys_get_ticks, &sys_sleep, &sys_puts, &sys_sem_post, &sys_sem_wait};
+
+PUBLIC  sem_t rw_mutex = {1, 0, 0};
+PUBLIC  sem_t w_mutex = {1, 0, 0};
+PUBLIC  sem_t r_mutex = {1, 0, 0};
+PUBLIC  sem_t rcount_mutex = {NR_READERS, 0, 0};

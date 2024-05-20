@@ -22,9 +22,9 @@ PUBLIC void	delay(int time);
 void restart();
 
 /* main.c */
-void TestA();
-void TestB();
-void TestC();
+void T_main();
+void T_producer();
+void T_consumer();
 
 /* i8259.c */
 PUBLIC void put_irq_handler(int irq, irq_handler handler);
