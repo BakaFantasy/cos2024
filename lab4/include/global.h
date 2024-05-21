@@ -34,7 +34,13 @@ extern	irq_handler	irq_table[];
 extern	TTY		tty_table[];
 extern  CONSOLE         console_table[];
 
-extern  sem_t rw_mutex;
-extern  sem_t w_mutex;
-extern  sem_t r_mutex;
-extern  sem_t rcount_mutex;
+extern  char patterns[3];
+extern  char pattern_colors[3];
+
+extern  sem_t rw_sem;
+extern  sem_t w_sem;
+extern  sem_t r_sem;
+extern  sem_t rcount_sem;
+
+extern  int readers;
+extern  int writers;

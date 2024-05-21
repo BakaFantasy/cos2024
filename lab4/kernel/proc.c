@@ -41,7 +41,7 @@ PUBLIC int sys_get_ticks() {
                            sys_sleep
  *======================================================================*/
 PUBLIC void sys_sleep(int milli_sec) {
-  p_proc_ready->wakening_moment = get_ticks() + milli_sec / (1000 / HZ);
+  p_proc_ready->wakening_moment = get_ticks() + milli_sec / TIME_SLICE;
   schedule();
 }
 
@@ -75,9 +75,12 @@ PUBLIC void sys_sem_wait(sem_t *sem) {
   sem->value--;
   if (sem->value < 0) {
     p_proc_ready->blocked = 1;
+    p_proc_ready->status = WAITING;
     sem->waiters[sem->tail] = p_proc_ready;
     sem->tail = (sem->tail + 1) % NR_PROCS;
-    schedule(); // TODO: enable interruption?
+    enable_int();
+    schedule();
+    return;
   }
   enable_int();
 }

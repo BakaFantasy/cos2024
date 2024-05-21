@@ -100,9 +100,7 @@
 #define NR_SYS_CALL     5
 #define BUF_SZ 0x400
 
-/* producer-consumer */
-#define NR_READERS 3
-
+/* utils */
 #define DISP_REG(name) \
     do {               \
       u32 ret = 0; \
@@ -114,5 +112,36 @@
     } while (0)
 
 #define BREAKPOINT asm volatile("xchg %bx, %bx")
+
+/* producer-consumer */
+#define TIME_SLICE (1000 / HZ)
+
+#define ROUNDS 20
+#define REST_SLICES 1
+
+#define NR_READERS 3
+
+#define READER_FIRST
+
+#if defined(READER_FIRST)
+#define READ(slices) read_rf(slices)
+#define WRITE(slices) write_rf(slices)
+#elif defined(WRITER_FIRST)
+#define READ(slices) read_wf(slices)
+#define WRITE(slices) write_wf(slices)
+#elif defined(FAIR)
+#define READ(slices) read_fair(slices)
+#define WRITE(slices) write_fair(slices)
+#else
+#define READ(slices)
+#define WRITE(slices)
+#endif
+
+#define PROC_DO(stmt) \
+  while (running) { \
+    /*stmt*/; \
+    sleep(REST_SLICES); \
+  }                   \
+  while (1)
 
 #endif /* _ORANGES_CONST_H_ */

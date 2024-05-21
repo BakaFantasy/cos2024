@@ -27,6 +27,8 @@ typedef struct s_stackframe {  /* proc_ptr points here				↑ Low			*/
   u32 ss;    /*  ┛						┷High			*/
 } STACK_FRAME;
 
+typedef enum Status {IDLE, BUSY, WAITING} Status;
+
 typedef struct s_proc {
   STACK_FRAME regs;          /* process registers saved in stack frame */
 
@@ -38,6 +40,7 @@ typedef struct s_proc {
 
   int wakening_moment;
   int blocked;
+  Status status;
 
   u32 pid;                   /* process id passed in from MM */
   char p_name[16];           /* name of the process */

@@ -23,8 +23,11 @@ void restart();
 
 /* main.c */
 void T_main();
-void T_producer();
-void T_consumer();
+void T_producer1();
+void T_producer2();
+void T_consumer1();
+void T_consumer2();
+void T_consumer3();
 
 /* i8259.c */
 PUBLIC void put_irq_handler(int irq, irq_handler handler);
