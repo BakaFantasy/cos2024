@@ -41,6 +41,7 @@ typedef struct s_proc {
   int wakening_moment;
   int blocked;
   Status status;
+  int cnt;
 
   u32 pid;                   /* process id passed in from MM */
   char p_name[16];           /* name of the process */

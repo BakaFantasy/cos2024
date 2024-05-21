@@ -91,6 +91,8 @@ PUBLIC int kernel_main() {
   while (1) {}
 }
 
+/* RW problem */
+
 PRIVATE void work(int slices) {
   p_proc_ready->status = BUSY;
   sleep(slices * TIME_SLICE);
@@ -198,17 +200,70 @@ PRIVATE void write_fair(int slices) {
   sem_post(&critical_sem);
 }
 
+PRIVATE void print_rw(int no) {
+  char pattern[] = "  ";
+  pattern[0] = patterns[proc_table[no].status];
+  disp_color_str(pattern,
+                 MAKE_COLOR(pattern_colors[proc_table[no].status], BRIGHT));
+}
+
+/* PC problem */
+
+PRIVATE void consume(int no) {
+  int i = CAPACITY;
+  while (i == CAPACITY) {
+    sem_wait(&fill_sem);
+
+    sem_wait(&critical_sem);
+    for (i = 0; i < CAPACITY; i++) {
+      if (inventories[i] == no) {
+        inventories[i] = 0;
+        p_proc_ready->cnt++;
+        break;
+      }
+    }
+    sem_post(&critical_sem);
+
+    sem_post(&fill_sem);
+  }
+  sem_post(&empty_sem);
+}
+
+PRIVATE void produce(int no) {
+  sem_wait(&empty_sem);
+
+  sem_wait(&critical_sem);
+  for (int i = 0; i < CAPACITY; i++) {
+    if (inventories[i] == 0) {
+      inventories[i] = no;
+      p_proc_ready->cnt++;
+      break;
+    }
+  }
+  sem_post(&critical_sem);
+
+  sem_post(&fill_sem);
+}
+
+PRIVATE void print_pc(int no) {
+  disp_decimal(proc_table[no].cnt);
+  disp_str(" ");
+}
+
+/* Processes */
+
 void T_main() {
   char colon[] = ": ";
   char newline[] = "\n";
   for (int i = 0; i < ROUNDS; i++) {
     disp_decimal(i + 1);
     puts(colon);
-    for (int j = NR_TASKS + 1; j < NR_PROCS; j++) {
-      char pattern[] = "  ";
-      pattern[0] = patterns[proc_table[j].status];
-      disp_color_str(pattern,
-                     MAKE_COLOR(pattern_colors[proc_table[j].status], BRIGHT));
+    for (int j = NR_TASKS + 1; j < NR_TASKS + NR_PROCS; j++) {
+#ifndef PC
+      print_rw(j);
+#else
+      print_pc(j);
+#endif
     }
     puts(newline);
     if (disp_pos > 2 * SCREEN_SIZE) {
@@ -219,22 +274,42 @@ void T_main() {
   while (1) {}
 }
 
-void T_consumer1() {
+void T_reader1() {
   PROC_DO(READ(2))
 }
 
-void T_consumer2() {
+void T_reader2() {
   PROC_DO(READ(3))
 }
 
-void T_consumer3() {
+void T_reader3() {
   PROC_DO(READ(3))
 }
 
-void T_producer1() {
+void T_writer1() {
   PROC_DO(WRITE(3))
 }
 
-void T_producer2() {
+void T_writer2() {
   PROC_DO(WRITE(4))
+}
+
+void T_consumer1() {
+  PROC_DO(consume(1))
+}
+
+void T_consumer2() {
+  PROC_DO(consume(2))
+}
+
+void T_consumer3() {
+  PROC_DO(consume(2))
+}
+
+void T_producer1() {
+  PROC_DO(produce(1))
+}
+
+void T_producer2() {
+  PROC_DO(produce(2))
 }

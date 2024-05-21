@@ -113,17 +113,26 @@
 
 #define BREAKPOINT asm volatile("xchg %bx, %bx")
 
-/* producer-consumer */
+/* RW problem */
 #define TIME_SLICE (1000 / HZ)
 
 #define ROUNDS 20
-#define REST_SLICES 0
+#ifndef PC
+#define REST_SLICES 2
+#else
+#define REST_SLICES 1
+#endif
 
 #define MAX_READERS 2
 
-//#define READER_FIRST
+#define READER_FIRST
 //#define WRITER_FIRST
-#define FAIR
+//#define FAIR
+
+/* PC problem */
+#define CAPACITY 3
+
+//#define PC
 
 #if defined(READER_FIRST)
 #define READ(slices) read_rf(slices)

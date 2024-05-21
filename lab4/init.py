@@ -8,7 +8,8 @@ def init():
 
 
 def process():
-  # gdb.execute('break _start')
+  gdb.execute('hbreak *0x7c00')
+  gdb.execute('break _start')
   gdb.execute('break T_main')
   gdb.execute('continue')
 

@@ -34,6 +34,7 @@ extern	irq_handler	irq_table[];
 extern	TTY		tty_table[];
 extern  CONSOLE         console_table[];
 
+/* RW problem */
 extern  char patterns[3];
 extern  char pattern_colors[3];
 
@@ -45,3 +46,9 @@ extern  sem_t critical_sem;
 
 extern  int reader_cnt;
 extern  int writer_cnt;
+
+/* PC problem */
+extern  sem_t fill_sem;
+extern  sem_t empty_sem;
+
+extern  int inventories[CAPACITY];
