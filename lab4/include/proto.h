@@ -56,7 +56,7 @@ typedef struct sem_t sem_t;
 /* proc.c */
 PUBLIC  int     sys_get_ticks();        /* sys_call */
 PUBLIC  void    sys_sleep(int milli_sec);
-PUBLIC  void    sys_puts(char *str);
+PUBLIC  void    sys_puts(char const *str);
 PUBLIC  void    sys_sem_post(sem_t *sem);
 PUBLIC  void    sys_sem_wait(sem_t *sem);
 
@@ -64,7 +64,7 @@ PUBLIC  void    sys_sem_wait(sem_t *sem);
 PUBLIC  void    sys_call();             /* int_handler */
 PUBLIC  int     get_ticks();
 PUBLIC  void    sleep(int milli_sec);
-PUBLIC  void    puts(char *str);
+PUBLIC  void    puts(char const *str);
 PUBLIC  void    sem_post(sem_t *sem);
 PUBLIC  void    sem_wait(sem_t *sem);
 

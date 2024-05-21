@@ -18,7 +18,7 @@ LD		= ld
 ASMBFLAGS	= -I boot/include/
 ASMKFLAGS	= -I include/ -f elf32
 CFLAGS		= -I include/ -c -fno-builtin -m32 -fno-stack-protector -g
-LDFLAGS		= -s -Ttext $(ENTRYPOINT) -m elf_i386
+LDFLAGS		= -Ttext $(ENTRYPOINT) -m elf_i386
 DASMFLAGS	= -u -o $(ENTRYPOINT) -e $(ENTRYOFFSET)
 FLOPPY_PATH	= ./floppy
 BOCHSRC		= ./bochsrc
@@ -46,10 +46,10 @@ all : realclean everything
 image : realclean everything clean buildimg
 
 run : image
-	bochs -qf $(BOCHSRC)
+	sudo bochs -qf $(BOCHSRC)
 
 debug :
-	gdb -ex 'target remote localhost:1234' $(ORANGESKERNEL)
+	gdb -x init.py $(ORANGESKERNEL)
 
 clean :
 	rm -f $(OBJS)

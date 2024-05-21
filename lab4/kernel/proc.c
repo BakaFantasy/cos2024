@@ -48,7 +48,7 @@ PUBLIC void sys_sleep(int milli_sec) {
 /*======================================================================*
                            sys_puts
  *======================================================================*/
-PUBLIC void sys_puts(char *str) {
+PUBLIC void sys_puts(char const *str) {
   char buf[BUF_SZ];
   strcpy(buf, str);
   disp_str(buf);

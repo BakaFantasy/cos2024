@@ -103,4 +103,16 @@
 /* producer-consumer */
 #define NR_READERS 3
 
+#define DISP_REG(name) \
+    do {               \
+      u32 ret = 0; \
+      asm volatile ( \
+          "mov %%" #name ", %0;" \
+          :"=a"(ret) : \
+          ); \
+      disp_int(ret);   \
+    } while (0)
+
+#define BREAKPOINT asm volatile("xchg %bx, %bx")
+
 #endif /* _ORANGES_CONST_H_ */

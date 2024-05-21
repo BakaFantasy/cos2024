@@ -118,7 +118,6 @@ static enum Algo current_algo = READER_FIRST;
 
 void T_main() {
   while (1) {
-
   }
 }
 
