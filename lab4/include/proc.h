@@ -64,6 +64,6 @@ typedef struct sem_t {
 #define STACK_SIZE_TTY     0x8000
 #define STACK_SIZE_PROC    0x8000
 
-#define STACK_SIZE_TOTAL  (STACK_SIZE_TTY + \
+#define STACK_SIZE_TOTAL  (NR_TASKS * STACK_SIZE_TTY + \
           NR_PROCS * STACK_SIZE_PROC)
 

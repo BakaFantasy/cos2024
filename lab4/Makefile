@@ -23,6 +23,9 @@ DASMFLAGS	= -u -o $(ENTRYPOINT) -e $(ENTRYOFFSET)
 FLOPPY_PATH	= ./floppy
 BOCHSRC		= ./bochsrc
 
+QEMU		= qemu-system-i386
+QEMUFLAGS	= -fda a.img -boot a
+
 # This Program
 ORANGESBOOT	= boot/boot.bin boot/loader.bin
 ORANGESKERNEL	= kernel.bin
@@ -46,9 +49,18 @@ all : realclean everything
 image : realclean everything clean buildimg
 
 run : image
-	sudo bochs -qf $(BOCHSRC)
+	bochs -qf $(BOCHSRC)
 
-debug :
+debug : image
+	bochsdbg -qf $(BOCHSRC)
+
+run-qemu : image
+	$(QEMU) $(QEMUFLAGS)
+
+debug-qemu : image
+	$(QEMU) -s -S $(QEMUFLAGS)
+
+gdb :
 	gdb -x init.py $(ORANGESKERNEL)
 
 clean :
