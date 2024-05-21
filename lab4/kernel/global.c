@@ -23,11 +23,11 @@ PUBLIC  TASK task_table[NR_TASKS] = {
 
 PUBLIC  TASK user_proc_table[NR_PROCS] = {
     {T_main, STACK_SIZE_PROC, "main"},
-    {T_producer1, STACK_SIZE_PROC, "P1"},
-    {T_producer1, STACK_SIZE_PROC, "P2"},
     {T_consumer1, STACK_SIZE_PROC, "C1"},
-    {T_consumer1, STACK_SIZE_PROC, "C2"},
-    {T_consumer1, STACK_SIZE_PROC, "C3"},
+    {T_consumer2, STACK_SIZE_PROC, "C2"},
+    {T_consumer3, STACK_SIZE_PROC, "C3"},
+    {T_producer1, STACK_SIZE_PROC, "P1"},
+    {T_producer2, STACK_SIZE_PROC, "P2"},
 };
 
 PUBLIC  char task_stack[STACK_SIZE_TOTAL];
@@ -46,7 +46,8 @@ PUBLIC  char pattern_colors[3] = {BLUE, GREEN, RED};
 PUBLIC  sem_t rw_sem = {1, 0, 0};
 PUBLIC  sem_t w_sem = {1, 0, 0};
 PUBLIC  sem_t r_sem = {1, 0, 0};
-PUBLIC  sem_t rcount_sem = {NR_READERS, 0, 0};
+PUBLIC  sem_t rcount_sem = {MAX_READERS, 0, 0};
+PUBLIC  sem_t critical_sem = {1, 0, 0};
 
-PUBLIC  int readers;
-PUBLIC  int writers;
+PUBLIC  int reader_cnt;
+PUBLIC  int writer_cnt;

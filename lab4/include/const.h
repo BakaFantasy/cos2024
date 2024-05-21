@@ -101,14 +101,14 @@
 #define BUF_SZ 0x400
 
 /* utils */
-#define DISP_REG(name) \
-    do {               \
-      u32 ret = 0; \
-      asm volatile ( \
-          "mov %%" #name ", %0;" \
-          :"=a"(ret) : \
-          ); \
-      disp_int(ret);   \
+#define DISP_REG(name)            \
+    do {                          \
+      u32 ret = 0;                \
+      asm volatile (              \
+          "mov %%" #name ", %0;"  \
+          :"=a"(ret) :            \
+          );                      \
+      disp_int(ret);              \
     } while (0)
 
 #define BREAKPOINT asm volatile("xchg %bx, %bx")
@@ -117,11 +117,13 @@
 #define TIME_SLICE (1000 / HZ)
 
 #define ROUNDS 20
-#define REST_SLICES 1
+#define REST_SLICES 0
 
-#define NR_READERS 3
+#define MAX_READERS 2
 
-#define READER_FIRST
+//#define READER_FIRST
+//#define WRITER_FIRST
+#define FAIR
 
 #if defined(READER_FIRST)
 #define READ(slices) read_rf(slices)
@@ -137,11 +139,11 @@
 #define WRITE(slices)
 #endif
 
-#define PROC_DO(stmt) \
-  while (running) { \
-    /*stmt*/; \
-    sleep(REST_SLICES); \
-  }                   \
-  while (1)
+#define PROC_DO(stmt)                 \
+  while (1) {                         \
+    stmt;                             \
+    p_proc_ready->status = IDLE;      \
+    sleep(REST_SLICES * TIME_SLICE);  \
+  }
 
 #endif /* _ORANGES_CONST_H_ */

@@ -92,14 +92,16 @@ PUBLIC int kernel_main() {
 }
 
 PRIVATE void work(int slices) {
+  p_proc_ready->status = BUSY;
   sleep(slices * TIME_SLICE);
 }
 
 PRIVATE void read_rf(int slices) {
   sem_wait(&r_sem);
-  if (++readers == 1) {
-    sem_wait(&w_sem);
+  if (reader_cnt == 0) {
+    sem_wait(&rw_sem);
   }
+  reader_cnt++;
   sem_post(&r_sem);
 
   sem_wait(&rcount_sem);
@@ -107,75 +109,132 @@ PRIVATE void read_rf(int slices) {
   sem_post(&rcount_sem);
 
   sem_wait(&r_sem);
-  if (--readers == 0) {
-    sem_wait(&w_sem);
+  reader_cnt--;
+  if (reader_cnt == 0) {
+    sem_post(&rw_sem);
   }
   sem_post(&r_sem);
 }
 
 PRIVATE void write_rf(int slices) {
   sem_wait(&rw_sem);
-  sem_wait(&w_sem);
 
   work(slices);
 
-  sem_post(&w_sem);
   sem_post(&rw_sem);
 }
 
 PRIVATE void read_wf(int slices) {
+  sem_wait(&critical_sem);
+  sem_wait(&r_sem);
+  if (reader_cnt == 0) {
+    sem_wait(&rw_sem);
+  }
+  reader_cnt++;
+  sem_post(&r_sem);
+  sem_post(&critical_sem);
 
+  sem_wait(&rcount_sem);
+  work(slices);
+  sem_post(&rcount_sem);
+
+  sem_wait(&r_sem);
+  reader_cnt--;
+  if (reader_cnt == 0) {
+    sem_post(&rw_sem);
+  }
+  sem_post(&r_sem);
 }
 
 PRIVATE void write_wf(int slices) {
+  sem_wait(&w_sem);
+  if (writer_cnt == 0) {
+    sem_wait(&critical_sem);
+  }
+  writer_cnt++;
+  sem_post(&w_sem);
 
+  sem_wait(&rw_sem);
+  work(slices);
+  sem_post(&rw_sem);
+
+  sem_wait(&w_sem);
+  writer_cnt--;
+  if (writer_cnt == 0) {
+    sem_post(&critical_sem);
+  }
+  sem_post(&w_sem);
 }
 
 PRIVATE void read_fair(int slices) {
+  sem_wait(&critical_sem);
+  sem_wait(&r_sem);
+  if (reader_cnt == 0) {
+    sem_wait(&rw_sem);
+  }
+  reader_cnt++;
+  sem_post(&r_sem);
+  sem_post(&critical_sem);
 
+  sem_wait(&rcount_sem);
+  work(slices);
+  sem_post(&rcount_sem);
+
+  sem_wait(&r_sem);
+  reader_cnt--;
+  if (reader_cnt == 0) {
+    sem_post(&rw_sem);
+  }
+  sem_post(&r_sem);
 }
 
 PRIVATE void write_fair(int slices) {
+  sem_wait(&critical_sem);
+  sem_wait(&rw_sem);
 
+  work(slices);
+
+  sem_post(&rw_sem);
+  sem_post(&critical_sem);
 }
-
-static int running = 1;
 
 void T_main() {
   char colon[] = ": ";
   char newline[] = "\n";
   for (int i = 0; i < ROUNDS; i++) {
-    disp_decimal(i);
-    disp_str(colon);
-    for (int j = 0; j < NR_TASKS + NR_PROCS; j++) {
+    disp_decimal(i + 1);
+    puts(colon);
+    for (int j = NR_TASKS + 1; j < NR_PROCS; j++) {
       char pattern[] = "  ";
       pattern[0] = patterns[proc_table[j].status];
       disp_color_str(pattern,
                      MAKE_COLOR(pattern_colors[proc_table[j].status], BRIGHT));
     }
-    disp_str(newline);
+    puts(newline);
+    if (disp_pos > 2 * SCREEN_SIZE) {
+      disp_pos = 0;
+    }
     sleep(TIME_SLICE);
   }
-  running = 0;
   while (1) {}
 }
 
-void T_producer1() {
-  PROC_DO(WRITE(3));
-}
-
-void T_producer2() {
-  PROC_DO(WRITE(4));
-}
-
 void T_consumer1() {
-  PROC_DO(READ(2));
+  PROC_DO(READ(2))
 }
 
 void T_consumer2() {
-  PROC_DO(READ(3));
+  PROC_DO(READ(3))
 }
 
 void T_consumer3() {
-  PROC_DO(READ(3));
+  PROC_DO(READ(3))
+}
+
+void T_producer1() {
+  PROC_DO(WRITE(3))
+}
+
+void T_producer2() {
+  PROC_DO(WRITE(4))
 }

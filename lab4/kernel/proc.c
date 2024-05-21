@@ -24,7 +24,7 @@ PUBLIC void schedule() {
     if (p_proc_ready >= proc_table + NR_TASKS + NR_PROCS) {
       p_proc_ready = proc_table;
     }
-    if (get_ticks() >= p_proc_ready->wakening_moment) {
+    if (get_ticks() >= p_proc_ready->wakening_moment && p_proc_ready->blocked == 0) {
       break;
     }
   }

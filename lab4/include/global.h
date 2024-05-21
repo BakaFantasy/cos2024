@@ -41,6 +41,7 @@ extern  sem_t rw_sem;
 extern  sem_t w_sem;
 extern  sem_t r_sem;
 extern  sem_t rcount_sem;
+extern  sem_t critical_sem;
 
-extern  int readers;
-extern  int writers;
+extern  int reader_cnt;
+extern  int writer_cnt;
