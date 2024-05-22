@@ -123,7 +123,7 @@
 #define REST_SLICES 1
 #endif
 
-#define MAX_READERS 2
+#define MAX_READERS 3
 
 #define READER_FIRST
 //#define WRITER_FIRST

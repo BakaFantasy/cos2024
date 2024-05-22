@@ -91,6 +91,7 @@ PUBLIC int kernel_main() {
   while (1) {}
 }
 
+#ifndef PC
 /* RW problem */
 
 PRIVATE void work(int slices) {
@@ -207,27 +208,28 @@ PRIVATE void print_rw(int no) {
                  MAKE_COLOR(pattern_colors[proc_table[no].status], BRIGHT));
 }
 
-/* PC problem */
-
-PRIVATE void consume(int no) {
-  int i = CAPACITY;
-  while (i == CAPACITY) {
-    sem_wait(&fill_sem);
-
-    sem_wait(&critical_sem);
-    for (i = 0; i < CAPACITY; i++) {
-      if (inventories[i] == no) {
-        inventories[i] = 0;
-        p_proc_ready->cnt++;
-        break;
-      }
-    }
-    sem_post(&critical_sem);
-
-    sem_post(&fill_sem);
-  }
-  sem_post(&empty_sem);
+void T_reader1() {
+  PROC_DO(READ(2))
 }
+
+void T_reader2() {
+  PROC_DO(READ(3))
+}
+
+void T_reader3() {
+  PROC_DO(READ(3))
+}
+
+void T_writer1() {
+  PROC_DO(WRITE(3))
+}
+
+void T_writer2() {
+  PROC_DO(WRITE(4))
+}
+
+#else
+/* PC problem */
 
 PRIVATE void produce(int no) {
   sem_wait(&empty_sem);
@@ -245,12 +247,69 @@ PRIVATE void produce(int no) {
   sem_post(&fill_sem);
 }
 
+PRIVATE int is_consumable(int no) {
+  int ret = 0;
+  sem_wait(&critical_sem);
+  for (int i = 0; i < CAPACITY; i++) {
+    if (inventories[i] == no) {
+      ret = 1;
+      break;
+    }
+  }
+  sem_post(&critical_sem);
+  return ret;
+}
+
+PRIVATE void consume(int no) {
+  while (1) {
+    sem_wait(&fill_sem);
+    if (is_consumable(no)) {
+      break;
+    }
+    sem_post(&fill_sem);
+  }
+
+  sem_wait(&critical_sem);
+  for (int i = 0; i < CAPACITY; i++) {
+    if (inventories[i] == no) {
+      inventories[i] = 0;
+      p_proc_ready->cnt++;
+      break;
+    }
+  }
+  sem_post(&critical_sem);
+
+  sem_post(&empty_sem);
+}
+
 PRIVATE void print_pc(int no) {
   disp_decimal(proc_table[no].cnt);
   disp_str(" ");
 }
 
-/* Processes */
+void T_producer1() {
+  PROC_DO(produce(1))
+}
+
+void T_producer2() {
+  PROC_DO(produce(2))
+}
+
+void T_consumer1() {
+  PROC_DO(consume(1))
+}
+
+void T_consumer2() {
+  PROC_DO(consume(2))
+}
+
+void T_consumer3() {
+  PROC_DO(consume(2))
+}
+
+#endif
+
+/* ordinary process */
 
 void T_main() {
   char colon[] = ": ";
@@ -272,44 +331,4 @@ void T_main() {
     sleep(TIME_SLICE);
   }
   while (1) {}
-}
-
-void T_reader1() {
-  PROC_DO(READ(2))
-}
-
-void T_reader2() {
-  PROC_DO(READ(3))
-}
-
-void T_reader3() {
-  PROC_DO(READ(3))
-}
-
-void T_writer1() {
-  PROC_DO(WRITE(3))
-}
-
-void T_writer2() {
-  PROC_DO(WRITE(4))
-}
-
-void T_consumer1() {
-  PROC_DO(consume(1))
-}
-
-void T_consumer2() {
-  PROC_DO(consume(2))
-}
-
-void T_consumer3() {
-  PROC_DO(consume(2))
-}
-
-void T_producer1() {
-  PROC_DO(produce(1))
-}
-
-void T_producer2() {
-  PROC_DO(produce(2))
 }

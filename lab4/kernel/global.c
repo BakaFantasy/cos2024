@@ -31,11 +31,11 @@ PUBLIC  TASK user_proc_table[NR_PROCS] = {
     {T_writer2, STACK_SIZE_PROC, "W2"},
 #else
     {T_main, STACK_SIZE_PROC, "main"},
+    {T_producer1, STACK_SIZE_PROC, "P1"},
+    {T_producer2, STACK_SIZE_PROC, "P2"},
     {T_consumer1, STACK_SIZE_PROC, "C1"},
     {T_consumer2, STACK_SIZE_PROC, "C2"},
     {T_consumer3, STACK_SIZE_PROC, "C3"},
-    {T_producer1, STACK_SIZE_PROC, "P1"},
-    {T_producer2, STACK_SIZE_PROC, "P2"},
 #endif
 };
 

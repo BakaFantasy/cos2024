@@ -28,11 +28,12 @@ void T_reader2();
 void T_reader3();
 void T_writer1();
 void T_writer2();
+
+void T_producer1();
+void T_producer2();
 void T_consumer1();
 void T_consumer2();
 void T_consumer3();
-void T_producer1();
-void T_producer2();
 
 /* i8259.c */
 PUBLIC void put_irq_handler(int irq, irq_handler handler);
