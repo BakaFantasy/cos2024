@@ -117,11 +117,6 @@
 #define TIME_SLICE (1000 / HZ)
 
 #define ROUNDS 20
-#ifndef PC
-#define REST_SLICES 2
-#else
-#define REST_SLICES 1
-#endif
 
 #define MAX_READERS 3
 
@@ -130,9 +125,15 @@
 //#define FAIR
 
 /* PC problem */
-#define CAPACITY 3
+#define CAPACITY 4
 
-//#define PC
+#define PC
+
+#ifndef PC
+#define REST_SLICES 2
+#else
+#define REST_SLICES 1
+#endif
 
 #if defined(READER_FIRST)
 #define READ(slices) read_rf(slices)
